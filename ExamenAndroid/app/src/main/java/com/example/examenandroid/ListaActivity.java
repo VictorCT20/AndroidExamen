@@ -92,13 +92,6 @@ public class ListaActivity extends AppCompatActivity {
         names.add("Lionel");
         names.add("Cristiano");
 
-
-
-
-
-
-
-
         return names;
 
     }

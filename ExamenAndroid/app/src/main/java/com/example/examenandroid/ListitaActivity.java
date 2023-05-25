@@ -1,6 +1,7 @@
 package com.example.examenandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,12 +17,13 @@ import java.util.List;
 
 public class ListitaActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listita);
 
-        ContactoAdapter adapter = new ContactoAdapter(data());
+        ContactoAdapter adapter = new ContactoAdapter(data(), this);
 
         RecyclerView rvLista =  findViewById(R.id.rvListaSimple);
         rvLista.setLayoutManager(new LinearLayoutManager(this));
