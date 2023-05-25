@@ -1,8 +1,6 @@
 package com.example.examenandroid.Clases;
 
-import android.media.Image;
-
-public class Contacto {
+public class Contacto{
 
     String nombre;
     String number;

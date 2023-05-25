@@ -48,6 +48,8 @@ public class ContactoAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+        System.out.println("numero:" + position);
+
         String nombre = contactos.get(position).getNombre();
         String numero = contactos.get(position).getNumber();
         String imagen = contactos.get(position).getFotito();
