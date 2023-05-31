@@ -12,13 +12,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.examenandroid.Adapters.AnimeAdapter;
 import com.example.examenandroid.Adapters.ContactoAdapter;
 import com.example.examenandroid.Clases.Contacto;
 import com.example.examenandroid.Clases.GuardarContactos;
+import com.example.examenandroid.Service.ContactoService;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class ListitaActivity extends AppCompatActivity {
@@ -41,6 +49,41 @@ public class ListitaActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ListitaActivity.this, RegistroActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://6477430d9233e82dd53b49f9.mockapi.io/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+
+        ContactoService service = retrofit.create(ContactoService.class);
+
+        Call<List<Contacto>> call = service.getAllUser();
+
+        call.enqueue(new Callback<List<Contacto>>() {
+            @Override
+            public void onResponse(Call<List<Contacto>> call, Response<List<Contacto>> response) {
+                if (response.isSuccessful()) {
+                    contactos = response.body();
+                    // Hacer algo con la lista de contactos
+                    // Por ejemplo, imprimir los nombres de los contactos
+                    for (Contacto contacto : contactos) {
+                        System.out.println(contacto.getNombre());
+                    }
+                } else {
+                    // La respuesta no fue exitosa
+                    // Manejar el código de error, si es necesario
+                    int statusCode = response.code();
+                    // Hacer algo en caso de error
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Contacto>> call, Throwable t) {
+
             }
         });
 
