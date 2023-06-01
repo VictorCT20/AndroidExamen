@@ -32,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ListitaActivity extends AppCompatActivity {
 
-        private List<Contacto> contactos = new ArrayList<>();
+    private List<Contacto> contactos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

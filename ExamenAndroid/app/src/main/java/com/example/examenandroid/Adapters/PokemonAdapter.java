@@ -2,7 +2,6 @@ package com.example.examenandroid.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.examenandroid.Clases.Contacto;
+import com.example.examenandroid.Clases.Pokemon;
+import com.example.examenandroid.DetallesPActivity;
 import com.example.examenandroid.EditarActivity;
 import com.example.examenandroid.ListitaActivity;
+import com.example.examenandroid.MostrarPActivity;
 import com.example.examenandroid.R;
 import com.example.examenandroid.Service.ContactoService;
+import com.example.examenandroid.Service.PokemonService;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -28,14 +31,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ContactoAdapter extends RecyclerView.Adapter{
+public class PokemonAdapter extends RecyclerView.Adapter{
 
-    private List<Contacto> contactos;
-
+    private List<Pokemon> pokemons;
     private Context context;
 
-    public ContactoAdapter(List<Contacto> contactos, Context context) {
-        this.contactos = contactos;
+    public PokemonAdapter(List<Pokemon> pokemons, Context context) {
+        this.pokemons = pokemons;
         this.context = context;
     }
 
@@ -43,40 +45,33 @@ public class ContactoAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.contacto_string, parent, false);
-        ContactoAdapter.NameViewHolder viewHolder = new ContactoAdapter.NameViewHolder(view);
+        View view = inflater.inflate(R.layout.item_pokemon, parent, false);
+        PokemonAdapter.NameViewHolder viewHolder = new PokemonAdapter.NameViewHolder(view);
 
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
-
-        int id = Integer.parseInt(contactos.get(position).getId());
-        System.out.println("numero:" + id);
-        String nombre = contactos.get(position).getNombre();
-        String numero = contactos.get(position).getNumber();
-        String imagen = contactos.get(position).getFotito();
+        int id = Integer.parseInt(pokemons.get(position).getId());
+        String nombre = pokemons.get(position).getNombre();
+        String pokedex = pokemons.get(position).getPokedex();
+        String tipo = pokemons.get(position).getTipo();
+        String imagen = pokemons.get(position).getImagen();
         View view = holder.itemView;
 
+        TextView txtID = view.findViewById(R.id.IdTextP);
         TextView txtName = view.findViewById(R.id.NombreTextP);
-        TextView txtNumero = view.findViewById(R.id.NumeroText);
-        ImageView imageView = view.findViewById(R.id.imgCon);
-        Button bttnLlamar = view.findViewById(R.id.bttnLlamar);
-        Button bttnEditar = view.findViewById(R.id.bttnEditar);
-        Button bttnEliminar = view.findViewById(R.id.bttnEliminar);
+        TextView txtTipo = view.findViewById(R.id.TipoTextP);
+        ImageView imageView = view.findViewById(R.id.imgPok);
+        Button bttnDetalle = view.findViewById(R.id.bttnDetalleP);
+        Button bttnEliminar = view.findViewById(R.id.bttnEliminarP);
+        txtID.setText(pokedex);
         txtName.setText(nombre);
-        txtNumero.setText(numero);
-
+        txtTipo.setText(tipo);
         Picasso.get().load(imagen).into(imageView);
 
-        bttnLlamar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDialer(numero);
-            }
-        });
+
         bttnEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,13 +80,13 @@ public class ContactoAdapter extends RecyclerView.Adapter{
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
-                ContactoService service = retrofit.create(ContactoService.class);
+                PokemonService service = retrofit.create(PokemonService.class);
 
                 Call<Void> call = service.delete(id);
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-                        Intent intent = new Intent(context, ListitaActivity.class);
+                        Intent intent = new Intent(context, MostrarPActivity.class);
                         context.startActivity(intent);
                     }
 
@@ -103,28 +98,22 @@ public class ContactoAdapter extends RecyclerView.Adapter{
             }
         });
 
-        bttnEditar.setOnClickListener(new View.OnClickListener() {
+        bttnDetalle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Crear un Intent para abrir el nuevo Activity
-                Intent intent =  new Intent(context, EditarActivity.class);
+                Intent intent =  new Intent(context, DetallesPActivity.class);
                 intent.putExtra("position", id);
                 context.startActivity(intent);
             }
         });
 
     }
-    private void openDialer(String phoneNumber) {
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + phoneNumber));
-        context.startActivity(intent);
-    }
 
     @Override
     public int getItemCount() {
-        return contactos.size();
+        return pokemons.size();
     }
-
     public class NameViewHolder extends RecyclerView.ViewHolder {
 
         public NameViewHolder(@NonNull View itemView) {
