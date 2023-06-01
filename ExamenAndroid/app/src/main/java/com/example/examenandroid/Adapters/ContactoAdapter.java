@@ -98,7 +98,8 @@ public class ContactoAdapter extends RecyclerView.Adapter{
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-
+                        Intent intent = new Intent(context, ListitaActivity.class);
+                        context.startActivity(intent);
                     }
 
                     @Override
@@ -113,13 +114,9 @@ public class ContactoAdapter extends RecyclerView.Adapter{
             @Override
             public void onClick(View view) {
                 // Crear un Intent para abrir el nuevo Activity
-                System.out.println("la ptmre: " + id);
-
-
                 Intent intent =  new Intent(context, EditarActivity.class);
                 intent.putExtra("position", id);
                 context.startActivity(intent);
-                // Agregar el dato como extra en el Intent
             }
         });
 

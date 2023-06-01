@@ -30,7 +30,6 @@ public class EditarActivity extends AppCompatActivity {
 
 
         int position = getIntent().getIntExtra("position", 0);
-        System.out.println("llama:" + position);
 
 
         Button regresarC = findViewById(R.id.btnERegresar);

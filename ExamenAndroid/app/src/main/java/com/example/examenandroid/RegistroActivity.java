@@ -31,12 +31,19 @@ public class RegistroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registro);
 
         Button registrarC = findViewById(R.id.btnRegistrar);
+        Button volverC = findViewById(R.id.btnVolver);
 
         EditText regNom = findViewById(R.id.etNombre);
         EditText regNum = findViewById(R.id.etNumero);
         EditText regFot = findViewById(R.id.etPhoto);
 
-
+        volverC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =  new Intent(RegistroActivity.this, ListitaActivity.class);
+                startActivity(intent);
+            }
+        });
 
         registrarC.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +52,7 @@ public class RegistroActivity extends AppCompatActivity {
                 String numero = regNum.getText().toString();
                 String imagen = regFot.getText().toString();
 
-                if (!nombre.isEmpty()) {
+                if (!nombre.isEmpty() && !imagen.isEmpty() && !numero.isEmpty()) {
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("https://6477430d9233e82dd53b49f9.mockapi.io/")
                             .addConverterFactory(GsonConverterFactory.create())
@@ -60,25 +67,24 @@ public class RegistroActivity extends AppCompatActivity {
                     Call<Contacto> call = service.create(con);
 
                     call.enqueue(new Callback<Contacto>() {
-                                     @Override
-                                     public void onResponse(Call<Contacto> call, Response<Contacto> response) {
+                                 @Override
+                                 public void onResponse(Call<Contacto> call, Response<Contacto> response) {
+                                     Intent intent =  new Intent(RegistroActivity.this, ListitaActivity.class);
+                                     startActivity(intent);
+                                     finish();
+                                 }
 
-                                     }
+                                 @Override
+                                 public void onFailure(Call<Contacto> call, Throwable t) {
 
-                                     @Override
-                                     public void onFailure(Call<Contacto> call, Throwable t) {
-
-                                     }
-                                 });
+                                 }
+                             });
 
                             Toast.makeText(RegistroActivity.this, "Usuario agregado", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(RegistroActivity.this, "Ingrese un nombre de usuario", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegistroActivity.this, "Llenar todos los campos", Toast.LENGTH_SHORT).show();
                 }
 
-                Intent intent =  new Intent(RegistroActivity.this, ListitaActivity.class);
-                startActivity(intent);
-                finish();
             }
         });
     }
