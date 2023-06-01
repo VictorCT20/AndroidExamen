@@ -20,13 +20,14 @@
         android:theme="@style/Theme.ExamenAndroid"
         tools:targetApi="31">
         <activity
+            android:name=".EditarActivity"
+            android:exported="false" />
+        <activity
             android:name=".ListaAnimeActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".RegistroActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".ListitaActivity"
             android:exported="true">

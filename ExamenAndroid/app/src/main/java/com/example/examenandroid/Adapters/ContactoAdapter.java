@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,20 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.examenandroid.Clases.Contacto;
+import com.example.examenandroid.EditarActivity;
+import com.example.examenandroid.ListitaActivity;
 import com.example.examenandroid.R;
+import com.example.examenandroid.RegistroActivity;
+import com.example.examenandroid.Service.ContactoService;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ContactoAdapter extends RecyclerView.Adapter{
 
@@ -48,8 +59,9 @@ public class ContactoAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        System.out.println("numero:" + position);
 
+        int id = Integer.parseInt(contactos.get(position).getId());
+        System.out.println("numero:" + id);
         String nombre = contactos.get(position).getNombre();
         String numero = contactos.get(position).getNumber();
         String imagen = contactos.get(position).getFotito();
@@ -59,6 +71,8 @@ public class ContactoAdapter extends RecyclerView.Adapter{
         TextView txtNumero = view.findViewById(R.id.NumeroText);
         ImageView imageView = view.findViewById(R.id.imgCon);
         Button bttnLlamar = view.findViewById(R.id.bttnLlamar);
+        Button bttnEditar = view.findViewById(R.id.bttnEditar);
+        Button bttnEliminar = view.findViewById(R.id.bttnEliminar);
         txtName.setText(nombre);
         txtNumero.setText(numero);
 
@@ -68,6 +82,44 @@ public class ContactoAdapter extends RecyclerView.Adapter{
             @Override
             public void onClick(View view) {
                 openDialer(numero);
+            }
+        });
+        bttnEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://6477430d9233e82dd53b49f9.mockapi.io/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                ContactoService service = retrofit.create(ContactoService.class);
+
+                Call<Void> call = service.delete(id);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
+        bttnEditar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crear un Intent para abrir el nuevo Activity
+                System.out.println("la ptmre: " + id);
+
+
+                Intent intent =  new Intent(context, EditarActivity.class);
+                intent.putExtra("position", id);
+                context.startActivity(intent);
+                // Agregar el dato como extra en el Intent
             }
         });
 

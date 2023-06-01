@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.examenandroid.Adapters.AnimeAdapter;
 import com.example.examenandroid.Adapters.ContactoAdapter;
@@ -31,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ListitaActivity extends AppCompatActivity {
 
-    private List<Contacto> contactos = new ArrayList<>();
+        private List<Contacto> contactos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class ListitaActivity extends AppCompatActivity {
 
         ComponentName callingActivity = getCallingActivity();
 
-        contactos = ((GuardarContactos) getApplicationContext()).getContactosList();
+        //contactos = ((GuardarContactos) getApplicationContext()).getContactosList();
 
 
         Button regresarC = findViewById(R.id.btnRegresar);
@@ -57,27 +58,27 @@ public class ListitaActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-
-
         ContactoService service = retrofit.create(ContactoService.class);
 
-        Call<List<Contacto>> call = service.getAllUser();
+        //Call<List<Contacto>> call = service.getAllUser();
 
+        Call<List<Contacto>> call = service.getAllUser();
         call.enqueue(new Callback<List<Contacto>>() {
             @Override
             public void onResponse(Call<List<Contacto>> call, Response<List<Contacto>> response) {
                 if (response.isSuccessful()) {
                     contactos = response.body();
-                    // Hacer algo con la lista de contactos
-                    // Por ejemplo, imprimir los nombres de los contactos
-                    for (Contacto contacto : contactos) {
-                        System.out.println(contacto.getNombre());
-                    }
+                    ContactoAdapter adapter = new ContactoAdapter(contactos, ListitaActivity.this);
+
+                    RecyclerView rvLista =  findViewById(R.id.rvListaSimple);
+                    rvLista.setLayoutManager(new LinearLayoutManager(ListitaActivity.this));
+                    rvLista.setAdapter(adapter);
+
                 } else {
-                    // La respuesta no fue exitosa
-                    // Manejar el código de error, si es necesario
                     int statusCode = response.code();
-                    // Hacer algo en caso de error
+                    String errorMessage = "Error: " + statusCode;
+
+                    Toast.makeText(ListitaActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -87,11 +88,7 @@ public class ListitaActivity extends AppCompatActivity {
             }
         });
 
-        ContactoAdapter adapter = new ContactoAdapter(contactos, this);
 
-        RecyclerView rvLista =  findViewById(R.id.rvListaSimple);
-        rvLista.setLayoutManager(new LinearLayoutManager(this));
-        rvLista.setAdapter(adapter);
     }
 
     private List<Contacto> data() {

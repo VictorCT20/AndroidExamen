@@ -11,9 +11,16 @@ import android.widget.Toast;
 
 import com.example.examenandroid.Clases.Contacto;
 import com.example.examenandroid.Clases.GuardarContactos;
+import com.example.examenandroid.Service.ContactoService;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegistroActivity extends AppCompatActivity {
 
@@ -39,9 +46,32 @@ public class RegistroActivity extends AppCompatActivity {
                 String imagen = regFot.getText().toString();
 
                 if (!nombre.isEmpty()) {
-                    Contacto contacto = new Contacto(nombre, numero, imagen);
-                    ((GuardarContactos) getApplicationContext()).setContactosList(contacto);
-                    Toast.makeText(RegistroActivity.this, "Usuario agregado", Toast.LENGTH_SHORT).show();
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("https://6477430d9233e82dd53b49f9.mockapi.io/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+                    ContactoService service = retrofit.create(ContactoService.class);
+
+                    Contacto con = new Contacto();
+                    con.setNombre(nombre);
+                    con.setNumber(numero);
+                    con.setFotito(imagen);
+
+                    Call<Contacto> call = service.create(con);
+
+                    call.enqueue(new Callback<Contacto>() {
+                                     @Override
+                                     public void onResponse(Call<Contacto> call, Response<Contacto> response) {
+
+                                     }
+
+                                     @Override
+                                     public void onFailure(Call<Contacto> call, Throwable t) {
+
+                                     }
+                                 });
+
+                            Toast.makeText(RegistroActivity.this, "Usuario agregado", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(RegistroActivity.this, "Ingrese un nombre de usuario", Toast.LENGTH_SHORT).show();
                 }

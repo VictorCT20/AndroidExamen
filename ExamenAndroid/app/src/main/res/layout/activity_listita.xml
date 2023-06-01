@@ -8,6 +8,22 @@
     tools:context=".ListitaActivity">
 
 
+    <LinearLayout
+        android:layout_width="404dp"
+        android:layout_height="556dp"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="7dp"
+        tools:layout_editor_absoluteY="89dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvListaSimple"
+            android:layout_width="409dp"
+            android:layout_height="match_parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
+
     <Button
         android:id="@+id/btnRegresar"
         android:layout_width="wrap_content"
@@ -20,22 +36,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="NotSibling" />
-
-    <LinearLayout
-        android:layout_width="404dp"
-        android:layout_height="642dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="7dp"
-        tools:layout_editor_absoluteY="89dp"
-        tools:ignore="MissingConstraints">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvListaSimple"
-            android:layout_width="409dp"
-            android:layout_height="match_parent">
-
-        </androidx.recyclerview.widget.RecyclerView>
-    </LinearLayout>
 
 </LinearLayout>
 

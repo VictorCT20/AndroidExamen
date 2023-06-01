@@ -14,19 +14,19 @@ import retrofit2.http.Path;
 
 public interface ContactoService {
 
-    @GET("contacto")
+    @GET("Contactos")
     Call<List<Contacto>> getAllUser();
 
-    @GET("contacto/{id}")
+    @GET("Contactos/{id}")
     Call<Contacto> findUser(@Path("id") int id);
 
-    @POST("contacto")
+    @POST("Contactos")
     Call<Contacto> create(@Body Contacto contacto);
 
-    @PUT("contacto/{id}")
+    @PUT("Contactos/{id}")
     Call<Contacto> update(@Path("id") int id, @Body Contacto contacto);
 
-    @DELETE("contacto/{id}")
+    @DELETE("Contactos/{id}")
     Call<Void> delete(@Path("id") int id);
 
 

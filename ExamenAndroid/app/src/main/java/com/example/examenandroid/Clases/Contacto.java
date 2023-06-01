@@ -1,7 +1,11 @@
 package com.example.examenandroid.Clases;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Contacto{
 
+    @SerializedName("id")
+    String id;
     String nombre;
     String number;
     String fotito;
@@ -13,6 +17,14 @@ public class Contacto{
         this.nombre = nombre;
         this.number = number;
         this.fotito = fotito;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNombre() {
