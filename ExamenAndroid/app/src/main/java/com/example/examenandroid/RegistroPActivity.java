@@ -51,6 +51,7 @@ public class RegistroPActivity extends AppCompatActivity {
                 String nombre = regNom.getText().toString();
                 String tipo = regTipo.getText().toString();
                 String pokedex = regFot.getText().toString();
+
                 String imagen = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/" + regFot.getText().toString() + ".png";
 
                 if (!nombre.isEmpty() && !imagen.isEmpty() && !tipo.isEmpty()) {

@@ -25,6 +25,8 @@ import com.example.examenandroid.Clases.GuardarContactos;
 import com.example.examenandroid.Service.ContactoService;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +35,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 
 public class RegistroActivity extends AppCompatActivity {
 
     private static final int OPEN_CAMERA_REQUEST = 1001;
     private static final int OPEN_GALLERY_REQUEST = 1002;
     private ImageView ivAvatar;
+    private String fotoEnBase64;
+    private Bitmap photo;
+    private String img;
+    String imR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +96,10 @@ public class RegistroActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String nombre = regNom.getText().toString();
                 String numero = regNum.getText().toString();
-                String imagen = regFot.getText().toString();
 
-                if (!nombre.isEmpty() && !imagen.isEmpty() && !numero.isEmpty()) {
+
+
+                if (!nombre.isEmpty() && !numero.isEmpty()) {
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("https://6477430d9233e82dd53b49f9.mockapi.io/")
                             .addConverterFactory(GsonConverterFactory.create())
@@ -101,13 +109,14 @@ public class RegistroActivity extends AppCompatActivity {
                     Contacto con = new Contacto();
                     con.setNombre(nombre);
                     con.setNumber(numero);
-                    con.setFotito(imagen);
+                    con.setFotito(img);
 
                     Call<Contacto> call = service.create(con);
 
                     call.enqueue(new Callback<Contacto>() {
                                  @Override
                                  public void onResponse(Call<Contacto> call, Response<Contacto> response) {
+
                                      Intent intent =  new Intent(RegistroActivity.this, ListitaActivity.class);
                                      startActivity(intent);
                                      finish();
@@ -115,7 +124,7 @@ public class RegistroActivity extends AppCompatActivity {
 
                                  @Override
                                  public void onFailure(Call<Contacto> call, Throwable t) {
-
+                                     System.out.println("fallo");
                                  }
                              });
 
@@ -133,38 +142,92 @@ public class RegistroActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == OPEN_CAMERA_REQUEST && resultCode == RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            photo = (Bitmap) data.getExtras().get("data");
             ivAvatar.setImageBitmap(photo);
-            System.out.println(photo + " + tmre");
 
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            fotoEnBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
-            String base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT);
-            System.out.println(base64Image + " + tmre4");
+            Retrofit imgRetro = new Retrofit.Builder()
+                    .baseUrl("https://demo-upn.bit2bittest.com/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            ContactoService.ImageToSave imageToSave = new ContactoService.ImageToSave(fotoEnBase64);
+
+            ContactoService imageService = imgRetro.create(ContactoService.class);
+
+            Call<ContactoService.ImageResponse> imgC = imageService.saveImage(imageToSave);
+
+            imgC.enqueue(new Callback<ContactoService.ImageResponse>() {
+                @Override
+                public void onResponse(Call<ContactoService.ImageResponse> call, Response<ContactoService.ImageResponse> response) {
+                    if(response.isSuccessful()){
+                        System.out.println(response.body().getUrl() + " + 2");
+                        img = "https://demo-upn.bit2bittest.com" + response.body().getUrl();
+                    }
+                    else
+                        Log.i("MAIN_APP", "No se subió");
+                }
+
+                @Override
+                public void onFailure(Call<ContactoService.ImageResponse> call, Throwable t) {
+
+                }
+            });
+
+
 
         }
 
         if(requestCode == OPEN_GALLERY_REQUEST && resultCode == RESULT_OK) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close(); // close cursor
 
-            Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
-            ivAvatar.setImageBitmap(bitmap);
-            System.out.println(bitmap + " + tmre2");
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(selectedImage);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                ivAvatar.setImageBitmap(bitmap);
 
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                fotoEnBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
-            String base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT);
-            System.out.println(base64Image + " + tmre3");
+                Retrofit imgRetro = new Retrofit.Builder()
+                        .baseUrl("https://demo-upn.bit2bittest.com/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                ContactoService.ImageToSave imageToSave = new ContactoService.ImageToSave(fotoEnBase64);
+
+                ContactoService imageService = imgRetro.create(ContactoService.class);
+
+                Call<ContactoService.ImageResponse> imgC = imageService.saveImage(imageToSave);
+
+                imgC.enqueue(new Callback<ContactoService.ImageResponse>() {
+                    @Override
+                    public void onResponse(Call<ContactoService.ImageResponse> call, Response<ContactoService.ImageResponse> response) {
+                        if(response.isSuccessful()){
+                            System.out.println(response.body().getUrl());
+                            img = "https://demo-upn.bit2bittest.com" + response.body().getUrl();
+                        }
+                        else
+                            System.out.println("No subio");
+                    }
+
+                    @Override
+                    public void onFailure(Call<ContactoService.ImageResponse> call, Throwable t) {
+
+                    }
+                });
+
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
 
         }
 
@@ -195,5 +258,7 @@ public class RegistroActivity extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(intent, OPEN_GALLERY_REQUEST);
     }
+
+
 
 }

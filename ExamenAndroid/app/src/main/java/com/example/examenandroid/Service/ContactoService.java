@@ -1,6 +1,7 @@
 package com.example.examenandroid.Service;
 
 import com.example.examenandroid.Clases.Contacto;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -29,5 +30,24 @@ public interface ContactoService {
     @DELETE("Contactos/{id}")
     Call<Void> delete(@Path("id") int id);
 
+    @POST("image")
+    Call<ImageResponse> saveImage(@Body ImageToSave image);
+
+
+    class ImageResponse {
+        @SerializedName("url")
+        private String url;
+
+        public String getUrl(){
+            return url;
+        }
+    }
+    class ImageToSave {
+        String base64Image;
+
+        public ImageToSave(String base64Image){
+            this.base64Image = base64Image;
+        }
+    }
 
 }
