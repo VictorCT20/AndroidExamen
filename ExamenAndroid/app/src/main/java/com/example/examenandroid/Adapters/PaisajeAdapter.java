@@ -13,29 +13,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.examenandroid.Clases.Contacto;
+import com.example.examenandroid.Clases.Paisaje;
 import com.example.examenandroid.EditarActivity;
-import com.example.examenandroid.ListitaActivity;
+import com.example.examenandroid.MostrarActivity;
 import com.example.examenandroid.R;
-import com.example.examenandroid.Service.ContactoService;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+public class PaisajeAdapter extends RecyclerView.Adapter{
 
-public class ContactoAdapter extends RecyclerView.Adapter{
-
-    private List<Contacto> contactos;
+    private List<Paisaje> paisajes;
 
     private Context context;
 
-    public ContactoAdapter(List<Contacto> contactos, Context context) {
-        this.contactos = contactos;
+    public PaisajeAdapter(List<Paisaje> paisajes, Context context) {
+        this.paisajes = paisajes;
         this.context = context;
     }
 
@@ -44,7 +37,7 @@ public class ContactoAdapter extends RecyclerView.Adapter{
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.contacto_string, parent, false);
-        ContactoAdapter.NameViewHolder viewHolder = new ContactoAdapter.NameViewHolder(view);
+        PaisajeAdapter.NameViewHolder viewHolder = new PaisajeAdapter.NameViewHolder(view);
 
         return viewHolder;
     }
@@ -53,31 +46,30 @@ public class ContactoAdapter extends RecyclerView.Adapter{
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
 
-        int id = Integer.parseInt(contactos.get(position).getId());
+        int id = Integer.parseInt(paisajes.get(position).getId());
         System.out.println("numero:" + id);
-        String nombre = contactos.get(position).getNombre();
-        String numero = contactos.get(position).getNumber();
-        String imagen = contactos.get(position).getFotito();
+        String nombre = paisajes.get(position).getNombre();
+        String imagen = paisajes.get(position).getFotito();
         View view = holder.itemView;
 
         TextView txtName = view.findViewById(R.id.NombreTextP);
-        TextView txtNumero = view.findViewById(R.id.NumeroText);
         ImageView imageView = view.findViewById(R.id.imgCon);
-        Button bttnLlamar = view.findViewById(R.id.bttnLlamar);
-        Button bttnEditar = view.findViewById(R.id.bttnEditar);
-        Button bttnEliminar = view.findViewById(R.id.bttnEliminar);
+        Button bttnMostrar = view.findViewById(R.id.bttnMostrar);
+        //Button bttnEditar = view.findViewById(R.id.bttnEditar);
+        //Button bttnEliminar = view.findViewById(R.id.bttnEliminar);
         txtName.setText(nombre);
-        txtNumero.setText(numero);
 
         Picasso.get().load(imagen).into(imageView);
 
-        bttnLlamar.setOnClickListener(new View.OnClickListener() {
+        bttnMostrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openDialer(numero);
+                Intent intent =  new Intent(context, EditarActivity.class);
+                intent.putExtra("position", id);
+                context.startActivity(intent);
             }
         });
-        bttnEliminar.setOnClickListener(new View.OnClickListener() {
+        /*bttnEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Retrofit retrofit = new Retrofit.Builder()
@@ -101,13 +93,13 @@ public class ContactoAdapter extends RecyclerView.Adapter{
                     }
                 });
             }
-        });
+        });*/
 
-        bttnEditar.setOnClickListener(new View.OnClickListener() {
+        bttnMostrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Crear un Intent para abrir el nuevo Activity
-                Intent intent =  new Intent(context, EditarActivity.class);
+                Intent intent =  new Intent(context, MostrarActivity.class);
                 intent.putExtra("position", id);
                 context.startActivity(intent);
             }
@@ -122,7 +114,7 @@ public class ContactoAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemCount() {
-        return contactos.size();
+        return paisajes.size();
     }
 
     public class NameViewHolder extends RecyclerView.ViewHolder {

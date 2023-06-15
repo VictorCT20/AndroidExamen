@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuardarContactos extends Application {
-        private List<Contacto> contactos = new ArrayList<>();
+        private List<Paisaje> paisajes = new ArrayList<>();
 
-        public List<Contacto> getContactosList() {
-            return contactos;
+        public List<Paisaje> getContactosList() {
+            return paisajes;
         }
-        public void setContactosList(Contacto contacto) {
-            contactos.add(contacto);
+        public void setContactosList(Paisaje paisaje) {
+            paisajes.add(paisaje);
         }
 }

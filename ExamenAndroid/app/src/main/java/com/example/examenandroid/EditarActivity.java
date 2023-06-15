@@ -10,8 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.examenandroid.Clases.Contacto;
-import com.example.examenandroid.Service.ContactoService;
+import com.example.examenandroid.Clases.Paisaje;
+import com.example.examenandroid.Service.PaisajeService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EditarActivity extends AppCompatActivity {
 
-    private Contacto con = new Contacto();
+    private Paisaje con = new Paisaje();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,49 +43,47 @@ public class EditarActivity extends AppCompatActivity {
                 .baseUrl("https://6477430d9233e82dd53b49f9.mockapi.io/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        ContactoService service = retrofit.create(ContactoService.class);
+        PaisajeService service = retrofit.create(PaisajeService.class);
 
-        Call<Contacto> call = service.findUser(position);
+        Call<Paisaje> call = service.findUser(position);
 
-        call.enqueue(new Callback<Contacto>() {
+        call.enqueue(new Callback<Paisaje>() {
             @Override
-            public void onResponse(Call<Contacto> call, Response<Contacto> response) {
+            public void onResponse(Call<Paisaje> call, Response<Paisaje> response) {
                 con = response.body();
                 regNom.setText(con.getNombre());
-                regNum.setText(con.getNumber());
                 regFot.setText(con.getFotito());
                 System.out.println("con:" + con.getNombre());
             }
 
             @Override
-            public void onFailure(Call<Contacto> call, Throwable t) {
+            public void onFailure(Call<Paisaje> call, Throwable t) {
                 Log.e("API Error", "Error en la llamada a la API: " + t.getMessage());
             }
         });
 
 
-        editarB.setOnClickListener(new View.OnClickListener() {
+        /*editarB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 String nombre = regNom.getText().toString();
-                String numero = regNum.getText().toString();
                 String imagen = regFot.getText().toString();
 
                 if (!nombre.isEmpty()) {
 
-                    Contacto contacto = new Contacto(nombre, numero, imagen);
+                    Paisaje paisaje = new Paisaje(nombre, imagen,"1.0","1.0");
 
-                    Call<Contacto> call1 = service.update(position, contacto);
+                    Call<Paisaje> call1 = service.update(position, paisaje);
 
-                    call1.enqueue(new Callback<Contacto>() {
+                    call1.enqueue(new Callback<Paisaje>() {
                         @Override
-                        public void onResponse(Call<Contacto> call, Response<Contacto> response) {
+                        public void onResponse(Call<Paisaje> call, Response<Paisaje> response) {
 
                         }
 
                         @Override
-                        public void onFailure(Call<Contacto> call, Throwable t) {
+                        public void onFailure(Call<Paisaje> call, Throwable t) {
 
                         }
                     });
@@ -100,7 +98,7 @@ public class EditarActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+*/
         regresarC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

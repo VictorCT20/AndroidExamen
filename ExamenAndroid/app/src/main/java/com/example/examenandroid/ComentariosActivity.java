@@ -10,11 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.examenandroid.Adapters.ComentarioAdapter;
-import com.example.examenandroid.Adapters.ContactoAdapter;
-import com.example.examenandroid.Adapters.PublicacionAdapter;
-import com.example.examenandroid.Clases.Contacto;
 import com.example.examenandroid.Clases.Publicacion;
-import com.example.examenandroid.Service.ContactoService;
 import com.example.examenandroid.Service.PublicacionService;
 
 import java.util.List;

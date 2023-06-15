@@ -12,14 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.examenandroid.Clases.Contacto;
 import com.example.examenandroid.Clases.Pokemon;
 import com.example.examenandroid.DetallesPActivity;
-import com.example.examenandroid.EditarActivity;
-import com.example.examenandroid.ListitaActivity;
 import com.example.examenandroid.MostrarPActivity;
 import com.example.examenandroid.R;
-import com.example.examenandroid.Service.ContactoService;
 import com.example.examenandroid.Service.PokemonService;
 import com.squareup.picasso.Picasso;
 

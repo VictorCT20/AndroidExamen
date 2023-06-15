@@ -10,11 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.examenandroid.Adapters.ContactoAdapter;
 import com.example.examenandroid.Adapters.PokemonAdapter;
-import com.example.examenandroid.Clases.Contacto;
 import com.example.examenandroid.Clases.Pokemon;
-import com.example.examenandroid.Service.ContactoService;
 import com.example.examenandroid.Service.PokemonService;
 
 import java.util.ArrayList;

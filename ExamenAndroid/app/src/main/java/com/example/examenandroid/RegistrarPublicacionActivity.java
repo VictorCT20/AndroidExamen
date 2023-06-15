@@ -17,12 +17,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.examenandroid.Clases.Contacto;
 import com.example.examenandroid.Clases.Publicacion;
-import com.example.examenandroid.Service.ContactoService;
 import com.example.examenandroid.Service.PublicacionService;
 
 import java.io.ByteArrayOutputStream;

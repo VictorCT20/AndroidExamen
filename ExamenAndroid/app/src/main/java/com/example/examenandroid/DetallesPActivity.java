@@ -9,10 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.examenandroid.Adapters.PokemonAdapter;
-import com.example.examenandroid.Clases.Contacto;
 import com.example.examenandroid.Clases.Pokemon;
-import com.example.examenandroid.Service.ContactoService;
 import com.example.examenandroid.Service.PokemonService;
 import com.squareup.picasso.Picasso;
 

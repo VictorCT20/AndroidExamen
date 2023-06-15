@@ -1,6 +1,6 @@
 package com.example.examenandroid.Service;
 
-import com.example.examenandroid.Clases.Contacto;
+import com.example.examenandroid.Clases.Paisaje;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -13,22 +13,17 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
-public interface ContactoService {
+public interface PaisajeService {
 
-    @GET("Contactos")
-    Call<List<Contacto>> getAllUser();
+    @GET("Paisaje")
+    Call<List<Paisaje>> getAllUser();
 
-    @GET("Contactos/{id}")
-    Call<Contacto> findUser(@Path("id") int id);
+    @GET("Paisaje/{id}")
+    Call<Paisaje> findUser(@Path("id") int id);
 
-    @POST("Contactos")
-    Call<Contacto> create(@Body Contacto contacto);
+    @POST("Paisaje")
+    Call<Paisaje> create(@Body Paisaje paisaje);
 
-    @PUT("Contactos/{id}")
-    Call<Contacto> update(@Path("id") int id, @Body Contacto contacto);
-
-    @DELETE("Contactos/{id}")
-    Call<Void> delete(@Path("id") int id);
 
     @POST("image")
     Call<ImageResponse> saveImage(@Body ImageToSave image);

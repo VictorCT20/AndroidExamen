@@ -32,12 +32,6 @@
                 android:layout_weight="1"
                 android:text="TextView" />
 
-            <TextView
-                android:id="@+id/NumeroText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView" />
         </LinearLayout>
 
         <LinearLayout
@@ -47,25 +41,12 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/bttnLlamar"
+                android:id="@+id/bttnMostrar"
                 android:layout_width="109dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Llamar" />
+                android:text="Mostrar" />
 
-            <Button
-                android:id="@+id/bttnEditar"
-                android:layout_width="112dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Editar" />
-
-            <Button
-                android:id="@+id/bttnEliminar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Eliminar" />
         </LinearLayout>
 
     </LinearLayout>

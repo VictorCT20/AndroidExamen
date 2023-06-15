@@ -7,12 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.examenandroid.Clases.Contacto;
 import com.example.examenandroid.Clases.Pokemon;
-import com.example.examenandroid.Service.ContactoService;
 import com.example.examenandroid.Service.PokemonService;
 
 import retrofit2.Call;

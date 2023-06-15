@@ -1,24 +1,19 @@
 package com.example.examenandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.examenandroid.Adapters.AnimeAdapter;
-import com.example.examenandroid.Adapters.ContactoAdapter;
-import com.example.examenandroid.Clases.Contacto;
-import com.example.examenandroid.Clases.GuardarContactos;
-import com.example.examenandroid.Service.ContactoService;
-import com.squareup.picasso.Picasso;
+import com.example.examenandroid.Adapters.PaisajeAdapter;
+import com.example.examenandroid.Clases.Paisaje;
+import com.example.examenandroid.Service.PaisajeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ListitaActivity extends AppCompatActivity {
 
-    private List<Contacto> contactos = new ArrayList<>();
+    private List<Paisaje> paisajes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +35,6 @@ public class ListitaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_listita);
 
         ComponentName callingActivity = getCallingActivity();
-
-        //contactos = ((GuardarContactos) getApplicationContext()).getContactosList();
-
 
         Button regresarC = findViewById(R.id.btnRegresar);
         regresarC.setOnClickListener(new View.OnClickListener() {
@@ -58,17 +50,16 @@ public class ListitaActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        ContactoService service = retrofit.create(ContactoService.class);
+        PaisajeService service = retrofit.create(PaisajeService.class);
 
-        //Call<List<Contacto>> call = service.getAllUser();
 
-        Call<List<Contacto>> call = service.getAllUser();
-        call.enqueue(new Callback<List<Contacto>>() {
+        Call<List<Paisaje>> call = service.getAllUser();
+        call.enqueue(new Callback<List<Paisaje>>() {
             @Override
-            public void onResponse(Call<List<Contacto>> call, Response<List<Contacto>> response) {
+            public void onResponse(Call<List<Paisaje>> call, Response<List<Paisaje>> response) {
                 if (response.isSuccessful()) {
-                    contactos = response.body();
-                    ContactoAdapter adapter = new ContactoAdapter(contactos, ListitaActivity.this);
+                    paisajes = response.body();
+                    PaisajeAdapter adapter = new PaisajeAdapter(paisajes, ListitaActivity.this);
 
                     RecyclerView rvLista =  findViewById(R.id.rvListaSimple);
                     rvLista.setLayoutManager(new LinearLayoutManager(ListitaActivity.this));
@@ -83,34 +74,11 @@ public class ListitaActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Contacto>> call, Throwable t) {
+            public void onFailure(Call<List<Paisaje>> call, Throwable t) {
 
             }
         });
 
 
-    }
-
-    private List<Contacto> data() {
-
-        Contacto c0 = new Contacto("Victor", "961987322", "https://intranet.upn.edu.pe/wsfoto/Foto/SmVJa3ZqcE12OWNSdGR2dE1ab0dhUT09/Student");
-        contactos.add(c0);
-        Contacto c1 = new Contacto("Omar", "987456321", "https://intranet.upn.edu.pe/wsfoto/Foto/SmVJa3ZqcE12OWNSdGR2dE1ab0dhUT09/Student");
-        contactos.add(c1);
-        Contacto c2 = new Contacto("Felix", "958741623", "https://intranet.upn.edu.pe/wsfoto/Foto/SmVJa3ZqcE12OWNSdGR2dE1ab0dhUT09/Student");
-        contactos.add(c2);
-        Contacto c3 = new Contacto("Luis", "951786324", "https://intranet.upn.edu.pe/wsfoto/Foto/SmVJa3ZqcE12OWNSdGR2dE1ab0dhUT09/Student");
-        contactos.add(c3);
-        Contacto c4 = new Contacto("Critiano", "962587413", "https://intranet.upn.edu.pe/wsfoto/Foto/SmVJa3ZqcE12OWNSdGR2dE1ab0dhUT09/Student");
-        contactos.add(c4);
-        Contacto c5 = new Contacto("Lionel", "947851236", "https://intranet.upn.edu.pe/wsfoto/Foto/SmVJa3ZqcE12OWNSdGR2dE1ab0dhUT09/Student");
-        contactos.add(c5);
-        Contacto c6 = new Contacto("Sergio", "912365478", "https://intranet.upn.edu.pe/wsfoto/Foto/SmVJa3ZqcE12OWNSdGR2dE1ab0dhUT09/Student");
-        contactos.add(c6);
-        Contacto c7 = new Contacto("Giampiere", "974123658", "https://intranet.upn.edu.pe/wsfoto/Foto/SmVJa3ZqcE12OWNSdGR2dE1ab0dhUT09/Student");
-        contactos.add(c7);
-
-
-        return contactos;
     }
 }

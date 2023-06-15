@@ -1,14 +1,18 @@
 package com.example.examenandroid;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,24 +22,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.examenandroid.Clases.Contacto;
-import com.example.examenandroid.Clases.GuardarContactos;
-import com.example.examenandroid.Service.ContactoService;
+import com.example.examenandroid.Clases.Paisaje;
+import com.example.examenandroid.Service.PaisajeService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
 
 public class RegistroActivity extends AppCompatActivity {
 
@@ -45,6 +46,9 @@ public class RegistroActivity extends AppCompatActivity {
     private String fotoEnBase64;
     private Bitmap photo;
     private String img;
+    TextView regLon, regLat, regFot;
+    double latitud, longitud;
+    private LocationManager mlocationManager;
     String imR;
 
     @Override
@@ -55,13 +59,14 @@ public class RegistroActivity extends AppCompatActivity {
         Button registrarC = findViewById(R.id.btnRegistrar);
         Button volverC = findViewById(R.id.btnVolver);
         Button btnCamera = findViewById(R.id.btnCamera);
-        Button btnGallery = findViewById(R.id.btnGaleria);
+        //Button btnCoord = findViewById(R.id.btnCoordenadas);
         ivAvatar = findViewById(R.id.ivAvatar);
 
         EditText regNom = findViewById(R.id.etNombre);
-        EditText regNum = findViewById(R.id.etNumero);
-        EditText regFot = findViewById(R.id.etPhoto);
-
+        /*regFot = findViewById(R.id.etPhoto);
+        regLat = findViewById(R.id.tvLatitud);
+        regLon = findViewById(R.id.tvLongitud);
+*/
         volverC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,48 +79,40 @@ public class RegistroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 handleOpenCamera();
+                obtenerCoordenadas();
             }
         });
 
-        btnGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    openGallery();
-                }
-                else {
-                    String[] permissions = new String[] {Manifest.permission.READ_EXTERNAL_STORAGE};
-                    requestPermissions(permissions, 2000);
-                }
-            }
-        });
+
 
 
         registrarC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String nombre = regNom.getText().toString();
-                String numero = regNum.getText().toString();
+                String lat = latitud + "";
+                String lon = longitud + "";
 
 
 
-                if (!nombre.isEmpty() && !numero.isEmpty()) {
+                if (!nombre.isEmpty()) {
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("https://6477430d9233e82dd53b49f9.mockapi.io/")
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
-                    ContactoService service = retrofit.create(ContactoService.class);
+                    PaisajeService service = retrofit.create(PaisajeService.class);
 
-                    Contacto con = new Contacto();
+                    Paisaje con = new Paisaje();
                     con.setNombre(nombre);
-                    con.setNumber(numero);
                     con.setFotito(img);
+                    con.setLatitud(lat);
+                    con.setLongitud(lon);
 
-                    Call<Contacto> call = service.create(con);
+                    Call<Paisaje> call = service.create(con);
 
-                    call.enqueue(new Callback<Contacto>() {
+                    call.enqueue(new Callback<Paisaje>() {
                                  @Override
-                                 public void onResponse(Call<Contacto> call, Response<Contacto> response) {
+                                 public void onResponse(Call<Paisaje> call, Response<Paisaje> response) {
 
                                      Intent intent =  new Intent(RegistroActivity.this, ListitaActivity.class);
                                      startActivity(intent);
@@ -123,7 +120,7 @@ public class RegistroActivity extends AppCompatActivity {
                                  }
 
                                  @Override
-                                 public void onFailure(Call<Contacto> call, Throwable t) {
+                                 public void onFailure(Call<Paisaje> call, Throwable t) {
                                      System.out.println("fallo");
                                  }
                              });
@@ -155,15 +152,15 @@ public class RegistroActivity extends AppCompatActivity {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
-            ContactoService.ImageToSave imageToSave = new ContactoService.ImageToSave(fotoEnBase64);
+            PaisajeService.ImageToSave imageToSave = new PaisajeService.ImageToSave(fotoEnBase64);
 
-            ContactoService imageService = imgRetro.create(ContactoService.class);
+            PaisajeService imageService = imgRetro.create(PaisajeService.class);
 
-            Call<ContactoService.ImageResponse> imgC = imageService.saveImage(imageToSave);
+            Call<PaisajeService.ImageResponse> imgC = imageService.saveImage(imageToSave);
 
-            imgC.enqueue(new Callback<ContactoService.ImageResponse>() {
+            imgC.enqueue(new Callback<PaisajeService.ImageResponse>() {
                 @Override
-                public void onResponse(Call<ContactoService.ImageResponse> call, Response<ContactoService.ImageResponse> response) {
+                public void onResponse(Call<PaisajeService.ImageResponse> call, Response<PaisajeService.ImageResponse> response) {
                     if(response.isSuccessful()){
                         System.out.println(response.body().getUrl() + " + 2");
                         img = "https://demo-upn.bit2bittest.com" + response.body().getUrl();
@@ -173,7 +170,7 @@ public class RegistroActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ContactoService.ImageResponse> call, Throwable t) {
+                public void onFailure(Call<PaisajeService.ImageResponse> call, Throwable t) {
 
                 }
             });
@@ -200,15 +197,15 @@ public class RegistroActivity extends AppCompatActivity {
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
-                ContactoService.ImageToSave imageToSave = new ContactoService.ImageToSave(fotoEnBase64);
+                PaisajeService.ImageToSave imageToSave = new PaisajeService.ImageToSave(fotoEnBase64);
 
-                ContactoService imageService = imgRetro.create(ContactoService.class);
+                PaisajeService imageService = imgRetro.create(PaisajeService.class);
 
-                Call<ContactoService.ImageResponse> imgC = imageService.saveImage(imageToSave);
+                Call<PaisajeService.ImageResponse> imgC = imageService.saveImage(imageToSave);
 
-                imgC.enqueue(new Callback<ContactoService.ImageResponse>() {
+                imgC.enqueue(new Callback<PaisajeService.ImageResponse>() {
                     @Override
-                    public void onResponse(Call<ContactoService.ImageResponse> call, Response<ContactoService.ImageResponse> response) {
+                    public void onResponse(Call<PaisajeService.ImageResponse> call, Response<PaisajeService.ImageResponse> response) {
                         if(response.isSuccessful()){
                             System.out.println(response.body().getUrl());
                             img = "https://demo-upn.bit2bittest.com" + response.body().getUrl();
@@ -218,7 +215,7 @@ public class RegistroActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ContactoService.ImageResponse> call, Throwable t) {
+                    public void onFailure(Call<PaisajeService.ImageResponse> call, Throwable t) {
 
                     }
                 });
@@ -257,6 +254,32 @@ public class RegistroActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, OPEN_GALLERY_REQUEST);
+    }
+
+    void obtenerCoordenadas(){
+
+        mlocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    latitud = location.getLatitude();
+                    longitud = location.getLongitude();
+                    System.out.println(latitud + " - " + longitud);
+                    Log.i("MAIN_APP", "Latitud" + latitud);
+                    Log.i("MAIN_APP", "Longitud" + longitud);
+                    mlocationManager.removeUpdates(this);
+                }
+            };
+
+            mlocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0, locationListener);
+        }
+        else{
+            String[] permissions = new String[] {Manifest.permission.ACCESS_FINE_LOCATION};
+            Log.i("MAIN_APP", "No hay permisos pa esta webada");
+            requestPermissions(permissions, 1000);
+        }
     }
 
 

@@ -2,21 +2,23 @@ package com.example.examenandroid.Clases;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Contacto{
+public class Paisaje {
 
     @SerializedName("id")
     String id;
     String nombre;
-    String number;
     String fotito;
+    String latitud;
+    String longitud;
 
-    public Contacto() {
+    public Paisaje() {
     }
 
-    public Contacto(String nombre, String number, String fotito) {
+    public Paisaje(String nombre, String fotito, String latitud, String longitud) {
         this.nombre = nombre;
-        this.number = number;
         this.fotito = fotito;
+        this.latitud = latitud;
+        this.longitud = longitud;
     }
 
     public String getId() {
@@ -35,12 +37,20 @@ public class Contacto{
         this.nombre = nombre;
     }
 
-    public String getNumber() {
-        return number;
+    public String getLatitud() {
+        return latitud;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setLatitud(String latitud) {
+        this.latitud = latitud;
+    }
+
+    public String getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(String longitud) {
+        this.longitud = longitud;
     }
 
     public String getFotito() {

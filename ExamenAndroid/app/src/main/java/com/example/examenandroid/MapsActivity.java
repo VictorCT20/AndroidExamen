@@ -1,17 +1,11 @@
 package com.example.examenandroid;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 
+import com.example.examenandroid.Clases.Paisaje;
+import com.example.examenandroid.Service.PaisajeService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,56 +14,63 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.examenandroid.databinding.ActivityMapsBinding;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
-    private LocationManager mLocationManager;
-    private Double latitude = 0.0;
-    private Double longitude = 0.0;
+    private double latitud, longitud;
+    Paisaje con = new Paisaje();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMapsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        int position = getIntent().getIntExtra("position", 0);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
-        if(
-                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED ||
-                        checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-            String[] permissions = new String[] {
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-            };
-            requestPermissions(permissions, 3000);
 
-        }
-        else {
-            LocationListener locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(@NonNull Location location) {
-                    double latitud = location.getLatitude();
-                    double longitud = location.getLongitude();
-                    Log.i("MAIN_APP", "Latitud" + latitud);
-                    Log.i("MAIN_APP", "Longitud" + longitud);
-                    mLocationManager.removeUpdates(this);
-                }
-            };
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://6477430d9233e82dd53b49f9.mockapi.io/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-            //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0, locationListener);
-            /*
-            // configurar frecuencia de actualización de GPS
-            mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 1, this);
-            Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            Log.i("MAIN_APP: Location - ",  "Latitude: " + location.getLatitude());*/
-        }
+        PaisajeService service = retrofit.create(PaisajeService.class);
+
+
+        Call<Paisaje> call = service.findUser(position);
+
+        call.enqueue(new Callback<Paisaje>() {
+            @Override
+            public void onResponse(Call<Paisaje> call, Response<Paisaje> response) {
+                con = response.body();
+
+                latitud = Double.parseDouble(con.getLatitud());
+
+                longitud = Double.parseDouble(con.getLongitud());
+
+                binding = ActivityMapsBinding.inflate(getLayoutInflater());
+                setContentView(binding.getRoot());
+
+                // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
+                mapFragment.getMapAsync(MapsActivity.this);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Paisaje> call, Throwable t) {
+
+            }
+        });
+
     }
 
     /**
@@ -86,19 +87,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(latitude, longitude);
+        LatLng sydney = new LatLng(latitud, longitud);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }/*
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
+    }
 
-        LatLng latLng = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        Log.i("MAIN_APP: Location - ",  "Latitude: " + latitude);
-        Log.i("MAIN_APP: Location - ",  "Longitude: " + longitude);
-    }*/
 }
