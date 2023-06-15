@@ -33,6 +33,13 @@ public interface PublicacionService {
     @POST("image")
     Call<ImageResponse> saveImage(@Body ImageToSave image);
 
+    @POST("Publicacion/{id}/Comentarios")
+    Call<Publicacion> agregarComentario(@Path("id") int id, @Body String comentario);
+
+    @GET("Publicacion/{id}/Comentarios")
+    Call<List<String>> getComentarios(@Path("id") int id);
+
+
 
     class ImageResponse {
         @SerializedName("url")

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,7 +37,12 @@ public class ComentarioAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        String comentario = comentarios.get(position).toString();
+        View view = holder.itemView;
 
+        TextView txtComen = view.findViewById(R.id.tvComentarios);
+
+        txtComen.setText(comentario);
     }
 
     @Override

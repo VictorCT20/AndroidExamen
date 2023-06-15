@@ -15,11 +15,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.examenandroid.Clases.Publicacion;
+import com.example.examenandroid.ComentariosActivity;
 import com.example.examenandroid.EditarActivity;
 import com.example.examenandroid.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import retrofit2.Call;
 
 public class PublicacionAdapter extends RecyclerView.Adapter{
 
@@ -62,7 +65,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter{
             @Override
             public void onClick(View v) {
                 // Crear un Intent para abrir el nuevo Activity
-                Intent intent =  new Intent(context, EditarActivity.class);
+                Intent intent =  new Intent(context, ComentariosActivity.class);
                 intent.putExtra("position", id);
                 context.startActivity(intent);
             }
@@ -73,6 +76,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter{
     public int getItemCount() {
         return publicaciones.size();
     }
+
 
     public class NameViewHolder extends RecyclerView.ViewHolder {
         public NameViewHolder(@NonNull View itemView) {
